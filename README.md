@@ -58,3 +58,110 @@ Com base nessas características, aqui está uma proposta inicial para uma nova 
 - Desenvolvimento Cross-Platform: Capacidade de compilar para diferentes plataformas com facilidade.
 
 Vou realizar uma pesquisa mais detalhada e desenvolver um documento técnico sobre as melhores práticas de cada uma dessas linguagens, que usarei como referência para projetar a FlexLang. **Colaborações são bem-vindas!** Se alguém tiver alguma característica específica ou funcionalidade que gostaria de incluir, por favor, me avise!
+
+Para desenvolver uma nova linguagem de programação, é preciso seguir várias etapas, desde a definição dos conceitos básicos até a implementação do compilador ou interpretador. Vou começar pelos conceitos fundamentais e progredir para a implementação.
+
+### Passo 1: Definir a Sintaxe e Semântica
+A sintaxe define como o código da linguagem é escrito, enquanto a semântica define o que o código significa.
+
+**1.1. Estrutura Básica**
+
+Vou criar uma sintaxe simples e legível, inspirada no Python, com tipagem estática como o Rust, e suporte a concorrência como o Go.
+
+**Exemplo de Sintaxe**
+```
+// Comentário de linha única
+/*
+   Comentário de múltiplas linhas
+*/
+
+// Declaração de variáveis
+let x: Int = 10;
+let y = 20; // Inferência de tipo
+
+// Função
+func add(a: Int, b: Int) -> Int {
+    return a + b;
+}
+
+// Controle de fluxo
+if x > y {
+    print("x é maior que y");
+} else {
+    print("x é menor ou igual a y");
+}
+
+// Loop
+for i in 0..10 {
+    print(i);
+}
+
+// Concorrência
+goroutine {
+    print("Concorrência em ação!");
+}
+
+// Estruturas de dados
+struct Point {
+    x: Int,
+    y: Int,
+}
+
+let p = Point { x: 10, y: 20 };
+print(p.x);
+
+```
+### Passo 2: Definir o Léxico e a Gramática
+**2.1. Tokens**
+
+Os tokens são as menores unidades de uma linguagem de programação, como palavras-chave, operadores e identificadores.
+
+**Palavras-chave**
+```
+let, func, if, else, for, in, return, struct, goroutine
+```
+**2.2. Gramática**
+
+A gramática define as regras de como os tokens podem ser combinados para formar sentenças válidas na linguagem.
+
+**Exemplo de Gramática Simplificada (usando Notação BNF)**
+```
+<program> ::= <statement>*
+<statement> ::= <variable-declaration> | <function-declaration> | <expression>
+<variable-declaration> ::= "let" <identifier> [":" <type>] "=" <expression> ";"
+<function-declaration> ::= "func" <identifier> "(" <parameters> ")" "->" <type> "{" <statement>* "}"
+<parameters> ::= (<identifier> ":" <type> ("," <identifier> ":" <type>)*)?
+<expression> ::= <literal> | <identifier> | <binary-operation> | <function-call>
+<binary-operation> ::= <expression> <operator> <expression>
+<function-call> ::= <identifier> "(" <arguments> ")"
+<arguments> ::= <expression> ("," <expression>)*
+<type> ::= "Int" | "Float" | "String" | "Bool" | <identifier>
+<identifier> ::= [a-zA-Z_][a-zA-Z0-9_]*
+<literal> ::= <integer> | <float> | <string> | <boolean>
+<integer> ::= [0-9]+
+<float> ::= [0-9]+"."[0-9]+
+<string> ::= "\"" .* "\""
+<boolean> ::= "true" | "false"
+<operator> ::= "+" | "-" | "*" | "/" | "==" | "!=" | "<" | ">"
+```
+### Passo 3: Implementar um Compilador ou Interpretador
+Vou optar por implementar um interpretador inicialmente, que pode ser escrito em uma linguagem de programação como Python para simplificar o desenvolvimento.
+
+**3.1. Léxico (Lexer)**
+
+O léxico é responsável por dividir o código-fonte em tokens.
+
+**3.2. Analisador Sintático (Parser)**
+
+O analisador sintático é responsável por transformar tokens em uma árvore de sintaxe abstrata (AST - Abstract Syntax Tree).
+
+**3.3. Interpretador**
+
+O interpretador percorre a AST e executa o código.
+
+**3.4. Concorrência**
+
+Implementar suporte a goroutines ou similar para concorrência.
+
+### Iniciando o Lexer e o Parser em Python
+Vou criar um exemplo básico de um lexer e parser para começar.
