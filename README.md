@@ -189,3 +189,6 @@ O parser irá converter os tokens em uma Árvore de Sintaxe Abstrata (AST).
 
 ### 2.1. Estrutura da AST
 Vou definir algumas classes básicas para representar a AST.
+
+### 2.2. Parser
+O parser irá construir a AST a partir dos tokens.
