@@ -49,3 +49,9 @@ class FuncCall(ASTNode):
     def __init__(self, name, args):
         self.name = name
         self.args = args
+
+
+class UnaryOp(ASTNode):
+    def __init__(self, op, expr):
+        self.op = op
+        self.expr = expr
