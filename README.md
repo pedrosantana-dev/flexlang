@@ -165,3 +165,27 @@ Implementar suporte a goroutines ou similar para concorrência.
 
 ### Iniciando o Lexer e o Parser em Python
 Vou criar um exemplo básico de um lexer e parser para começar.
+
+Isso é apenas o começo. Com base nisso, posso expandir o lexer e o parser para suportar toda a sintaxe e semântica da nossa nova linguagem.
+
+### Próximos Passos
+1. **Expandir o Lexer:** Suportar todas as construções da linguagem.
+2. **Implementar o Parser:** Construir a AST.
+3. **Desenvolver o Interpretador:** Executar a AST.
+4. **Adicionar Concorrência:** Implementar suporte a goroutines.
+5. **Desenvolver um Sistema de Pacotes:** Facilitar a gestão de bibliotecas e dependências.
+6. **Criar Documentação:** Detalhar a sintaxe, semântica e uso da linguagem.
+
+Estou pronto para prosseguir com o desenvolvimento do lexer, parser e interpretador para linguagem **FlexLang**!
+
+## Passo 1: Expansão do Lexer
+Vou expandir o lexer para suportar todas as construções básicas da nossa linguagem. O lexer irá converter o código-fonte em tokens que o parser pode usar.
+
+### 1.1. Definição Completa dos Tokens
+Vou definir tokens para identificadores, palavras-chave, operadores, delimitadores e literais.
+
+## Passo 2: Implementar o Parser
+O parser irá converter os tokens em uma Árvore de Sintaxe Abstrata (AST).
+
+### 2.1. Estrutura da AST
+Vou definir algumas classes básicas para representar a AST.
