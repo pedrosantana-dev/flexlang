@@ -192,3 +192,8 @@ Vou definir algumas classes básicas para representar a AST.
 
 ### 2.2. Parser
 O parser irá construir a AST a partir dos tokens.
+
+## Passo 3: Implementar o Interpretador
+O interpretador irá percorrer a AST e executar o código.
+
+### 3.1. Implementação Básica do Interpretador
