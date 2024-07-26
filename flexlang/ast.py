@@ -55,3 +55,18 @@ class UnaryOp(ASTNode):
     def __init__(self, op, expr):
         self.op = op
         self.expr = expr
+
+
+class If(ASTNode):
+    def __init__(self, condition, then_branch, else_branch):
+        self.condition = condition
+        self.then_branch = then_branch
+        self.else_branch = else_branch
+
+
+class For(ASTNode):
+    def __init__(self, var, start, end, body):
+        self.var = var
+        self.start = start
+        self.end = end
+        self.body = body
