@@ -197,3 +197,7 @@ O parser irá construir a AST a partir dos tokens.
 O interpretador irá percorrer a AST e executar o código.
 
 ### 3.1. Implementação Básica do Interpretador
+Adicionando suporte para controle de fluxo (if, for), funções e estruturas de dados no interpretador.
+
+### 3.2. Controle de Fluxo
+Adicionar suporte para `if` e `for`.
