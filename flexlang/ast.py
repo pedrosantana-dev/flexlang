@@ -24,13 +24,13 @@ class FuncDecl(ASTNode):
 
 class FuncCall(ASTNode):
     def __init__(self, callee, args):
-        self.callee = callee
+        self.callee: FuncDecl = callee
         self.args = args
 
 
 class Param(ASTNode):
-    def __init__(self, name, type):
-        self.name = name
+    def __init__(self, identifier, type):
+        self.identifier: Identifier = identifier
         self.type = type
 
 

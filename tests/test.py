@@ -75,7 +75,7 @@ def test_calculator():
         return x / y;
     }
 
-    let r = main();
+    main();
     """
 
     tokens = lex(code, token_exprs)

@@ -5,79 +5,70 @@ class Interpreter:
     def __init__(self):
         self.environment = {}
 
-    def interpret(self, node):
-        if isinstance(node, Program):
-            for statement in node.statements:
-                self.interpret(statement)
+    def interpret(self, program):
+        print(f'Interpreting {type(program)}')
+        print(f'Interpreting program statements: {program.statements}')
+        if isinstance(program, Program):
+            for statement in program.statements:
+                self._evaluate(statement)
+        else:
+            raise Exception(f'Unknown program type {type(program)}')                
+
+    def _evaluate(self, node):
+        if isinstance(node, Num):
+            return node.value
+        elif isinstance(node, String):
+            return node.value
         elif isinstance(node, VarDecl):
-            value = self.evaluate(node.value)
-            print(f'VarDecl: {node.name} = {value}')
-            self.environment[node.name] = value
+            self.environment[node.name] = self._evaluate(node.value)
+            return None
+        elif isinstance(node, Identifier):
+            return self.environment.get(node.name)
+        elif isinstance(node, BinOp):
+            left = self._evaluate(node.left)
+            right = self._evaluate(node.right)
+            if node.op.type == 'PLUS':
+                return left + right
+            elif node.op.type == 'MINUS':
+                return left - right
+            elif node.op.type == 'TIMES':
+                return left * right
+            elif node.op.type == 'DIVIDE':
+                return left / right
+        elif isinstance(node, UnaryOp):
+            right = self._evaluate(node.right)
+            if node.op.type == 'MINUS':
+                return -right
+        elif isinstance(node, Input):
+            prompt = self._evaluate(node.prompt)
+            return float(input(prompt))
+        elif isinstance(node, Print):
+            print(f'Print: {node}')
+            values = [self._evaluate(v) for v in node.values]
+            print(" ".join(map(str, values)))
+        elif isinstance(node, ExprStmt):
+            return self._evaluate(node.expr)
+        elif isinstance(node, ReturnStmt):
+            return node.value
         elif isinstance(node, FuncDecl):
             self.environment[node.name] = node
-        elif isinstance(node, ReturnStmt):
-            return self.evaluate(node.value)
-        elif isinstance(node, ExprStmt):
-            return self.evaluate(node.expr)
-        elif isinstance(node, Identifier):
-            return self.evaluate(node)
-        
-    def execute(self, stmt):
-        if isinstance(stmt, VarDecl):
-            value = self.evaluate(stmt.value)
-            print(f'VarDecl: {stmt.name} = {value}')
-            self.environment[stmt.name] = value
-        elif isinstance(stmt, FuncDecl):
-            self.environment[stmt.name] = stmt
-        elif isinstance(stmt, ReturnStmt):
-            return self.evaluate(stmt.value)
-        elif isinstance(stmt, ExprStmt):
-            return self.evaluate(stmt.expr)
-
-    def evaluate(self, expr):
-        if isinstance(expr, Num):
-            return expr.value
-        elif isinstance(expr, String):
-            return expr.value
-        elif isinstance(expr, Identifier):
-            return self.environment.get(expr.name)
-        elif isinstance(expr, BinOp):
-            left = self.evaluate(expr.left)
-            right = self.evaluate(expr.right)
-            if expr.op.type == 'PLUS':
-                return left + right
-            elif expr.op.type == 'MINUS':
-                return left - right
-            elif expr.op.type == 'TIMES':
-                return left * right
-            elif expr.op.type == 'DIVIDE':
-                return left / right
-        elif isinstance(expr, UnaryOp):
-            right = self.evaluate(expr.right)
-            if expr.op.type == 'MINUS':
-                return -right
-        elif isinstance(expr, Input):
-            prompt = self.evaluate(expr.prompt)
-            return float(input(prompt))
-        elif isinstance(expr, Print):
-            values = [self.evaluate(v) for v in expr.values]
-            print(" ".join(map(str, values)))
-        elif isinstance(expr, FuncCall):
-            func = self.environment[expr.callee.name]
+            return None
+        elif isinstance(node, FuncCall):
+            func = self.environment[node.callee.name]
+            print(f'Func: {func.name}')
             if func is None:
-                raise Exception(f'Undefined function {expr.callee.name}')
-            args = [self.evaluate(arg) for arg in expr.args]
+                raise Exception(f'Undefined function {node.callee.name}')
+            args = [self._evaluate(arg) for arg in node.args]
             local_env = self.environment.copy()
             for param, arg in zip(func.parameters, args):
-                local_env[param.name.value] = arg
+                local_env[param.identifier.name] = arg
             old_environment = self.environment.copy()
             self.environment = local_env
             for stmt in func.body:
-                result = self.execute(stmt)
-                print(f'Soma interna: {result}')
-                if isinstance(result, ReturnStmt):
-                    return result.value
+                result = self._evaluate(stmt)
+                if result is not None:
+                    return self._evaluate(result)
             self.environment = old_environment
             return None
 
-        raise Exception(f'Unknown expression type {type(expr)}')
+        raise Exception(f'Unknown expression type {type(node)}')

@@ -4,6 +4,7 @@ class Parser:
     def __init__(self, tokens):
         self.tokens = tokens
         self.pos = 0
+        print(f'Parser: {self.tokens}')
 
     def parse(self):
         statements = []
@@ -55,10 +56,11 @@ class Parser:
         return params
     
     def _parameter(self):
-        name = self._consume('ID', 'Expected parameter name')
+        token = self._consume('ID', 'Expected parameter name')
         self._consume('COLON', 'Expected ":"')
         type = self._type()
-        return Param(name, type)
+        identifier = Identifier(token.value)
+        return Param(identifier, type)
     
     def _type(self):
         return self._consume('ID', 'Expected type')
