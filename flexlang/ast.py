@@ -22,6 +22,12 @@ class FuncDecl(ASTNode):
         self.body = body
 
 
+class FuncCall(ASTNode):
+    def __init__(self, callee, args):
+        self.callee = callee
+        self.args = args
+
+
 class Param(ASTNode):
     def __init__(self, name, type):
         self.name = name
@@ -39,16 +45,14 @@ class Num(ASTNode):
     def __init__(self, value):
         self.value = value
 
+class String(ASTNode):
+    def __init__(self, value):
+        self.value = value
 
-class Indentifier(ASTNode):
+
+class Identifier(ASTNode):
     def __init__(self, name):
         self.name = name
-
-
-class FuncCall(ASTNode):
-    def __init__(self, name, args):
-        self.name = name
-        self.args = args
 
 
 class UnaryOp(ASTNode):
@@ -70,3 +74,32 @@ class For(ASTNode):
         self.start = start
         self.end = end
         self.body = body
+
+    
+class ExprStmt(ASTNode):
+    def __init__(self, expr):
+        self.expr = expr
+
+
+class ReturnStmt(ASTNode):
+    def __init__(self, value):
+        self.value = value
+
+    def __repr__(self):
+        return f'ReturnStmt({self.value})'
+    
+
+class Input(ASTNode):
+    def __init__(self, prompt):
+        self.prompt = prompt
+
+
+class Print(ASTNode):
+    def __init__(self, values):
+        self.values = values
+
+
+class Assign(ASTNode):
+    def __init__(self, name, value):
+        self.name = name
+        self.value = value

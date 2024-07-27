@@ -8,7 +8,9 @@ class Parser:
     def parse(self):
         statements = []
         while not self._is_at_end():
-            statements.append(self._statement())
+            stmt = self._statement()
+            if stmt is not None:
+                statements.append(stmt)
         return Program(statements)
     
     def _statement(self):
@@ -16,18 +18,20 @@ class Parser:
             return self._var_decl()
         elif self._match('FUNC'):
             return self._func_decl()
+        elif self._match('RETURN'):
+            return self._return_stmt()
         else:
-            raise RuntimeError('Unexpected statement')
+            self._expression_stmt()
     
     def _var_decl(self):
-        name = self._consume('ID', 'Expected indentifier')
+        token = self._consume('ID', 'Expected identifier')
         self._consume('ASSIGN', 'Expected "="')
         value = self._expression()
         self._consume('END', 'Expected ";"')
-        return VarDecl(name, None, value)
+        return VarDecl(token.value, None, value)
     
     def _func_decl(self):
-        name = self._consume('ID', 'Expected indentifier')
+        token = self._consume('ID', 'Expected identifier')
         self._consume('LPAREN', 'Expected "("')
         params = self._parameters()
         self._consume('RPAREN', 'Expected ")"')
@@ -36,9 +40,11 @@ class Parser:
         self._consume('LBRACE', 'Expected "{"')
         body = []
         while not self._check('RBRACE'):
-            body.append(self._statement())
+            stmt = self._statement()
+            if stmt is not None:
+                body.append(stmt)
         self._consume('RBRACE', 'Expected "}"')
-        return FuncDecl(name, params, return_type, body)
+        return FuncDecl(token.value, params, return_type, body)
     
     def _parameters(self):
         params = []
@@ -58,7 +64,30 @@ class Parser:
         return self._consume('ID', 'Expected type')
     
     def _expression(self):
-        return self._equality()
+        return self._assignment()
+    
+    def _assignment(self):
+        expr = self._or()
+        if self._match('ASSIGN'):
+            value = self._expression()
+            return Assign(expr, value)
+        return expr
+    
+    def _or(self):
+        expr = self._and()
+        while self._match('OR'):
+            op = self._previous()
+            right = self._and()
+            expr = BinOp(expr, op, right)
+        return expr
+    
+    def _and(self):
+        expr = self._equality()
+        while self._match('AND'):
+            op = self._previous()
+            right = self._equality()
+            expr = BinOp(expr, op, right)
+        return expr
     
     def _equality(self):
         expr = self._comparison()
@@ -97,18 +126,63 @@ class Parser:
             op = self._previous()
             right = self._unary()
             return UnaryOp(op, right)
-        return self._primary()
+        return self._call()
+    
+    def _call(self):
+        expr = self._primary()
+        while True:
+            if self._match('LPAREN'):
+                expr = self._finish_call(expr)
+            else:
+                break
+        return expr
+    
+    def _finish_call(self, callee):
+        args = []
+        if not self._check('RPAREN'):
+            args.append(self._expression())
+            while self._match('COMMA'):
+                args.append(self._expression())
+        self._consume('RPAREN', 'Expected ")"')
+        return FuncCall(callee, args)
     
     def _primary(self):
         if self._match('NUMBER'):
             return Num(self._previous().value)
-        if self._match('ID'):
-            return Indentifier(self._previous().value)
-        if self._match('LPAREN'):
+        elif self._match('STRING'):
+            return String(self._previous().value)
+        elif self._match('ID'):
+            return Identifier(self._previous().value)
+        elif self._match('LPAREN'):
             expr = self._expression()
             self._consume('RPAREN', 'Expected ")"')
             return expr
-        raise RuntimeError('Expected expression')
+        elif self._match('INPUT'):
+            self._consume('LPAREN', 'Expected "("')
+            prompt = self._expression()
+            self._consume('RPAREN', 'Expected ")"')
+            return Input(prompt)
+        elif self._match('PRINT'):
+            self._consume('LPAREN', 'Expected "("')
+            values = [self._expression()]
+            while self._match('COMMA'):
+                values.append(self._expression())
+            self._consume('RPAREN', 'Expected ")"')
+            return Print(values)
+        else:
+            raise RuntimeError('Expected expression')
+    
+    def _expression_stmt(self):
+        expr = self._expression()
+        self._consume('END', 'Expected ";"')
+        return ExprStmt(expr)
+    
+    def _return_stmt(self):
+        value = None
+        if not self._check('END'):
+            value = self._expression()
+        self._consume('END', 'Expected ";"')
+        return ReturnStmt(value)
     
     def _match(self, *types):
         for type in types:
