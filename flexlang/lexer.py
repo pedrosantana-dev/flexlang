@@ -50,7 +50,7 @@ tokens = [
     ('END',      r';'),
     ('INPUT',    r'\binput\b'),
     ('STRING', r'"((?:\\.|[^"\\])*)"|\'((?:\\.|[\x20-\x7E])*)\''),
-    ('ID',       r'[a-zA-Z_][a-zA-Z0-9_]*'),
+    ('ID',       r'[a-z_]\w*'),
     # ('MISMATCH', r'.')
 ]
 
@@ -71,6 +71,12 @@ def lex(characters, token_exprs):
             if match:
                 text = match.group(0)
                 if tag == 'NEWLINE' or tag == 'SKIP':
+                    pos = match.end(0)
+                    break
+                if tag == 'STRING':
+                    text = text[1:-1]
+                    token = Token(tag, text)
+                    tokens_list.append(token)
                     pos = match.end(0)
                     break
                 elif tag:

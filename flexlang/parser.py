@@ -4,7 +4,6 @@ class Parser:
     def __init__(self, tokens):
         self.tokens = tokens
         self.pos = 0
-        print(f'Parser: {self.tokens}')
 
     def parse(self):
         statements = []
