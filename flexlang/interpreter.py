@@ -72,5 +72,27 @@ class Interpreter:
                     return self._evaluate(result)
             self.environment = old_environment
             return None
+        elif isinstance(node, If):
+            condition = self._evaluate(node.condition)
+            if condition:
+                return self._evaluate(node.then_branch)
+            elif node.else_branch:
+                return self._evaluate(node.else_branch)
+            else:
+                return None
+        elif isinstance(node, For):
+            start = self._evaluate(node.start)
+            end = self._evaluate(node.end)
+            for i in range(start, end):
+                local_env = self.environment.copy()
+                local_env[node.var.name] = i
+                old_environment = self.environment.copy()
+                self.environment = local_env
+                for stmt in node.body:
+                    result = self._evaluate(stmt)
+                    if result is not None:
+                        return self._evaluate(result)
+                self.environment = old_environment
+            return None
 
         raise Exception(f'Unknown expression type {type(node)}')

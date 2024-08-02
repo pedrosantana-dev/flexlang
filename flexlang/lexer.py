@@ -34,6 +34,7 @@ tokens = [
     ('LESS',     r'<'),
     ('BANG',     r'!'),
     ('NEWLINE',  r'\n'),
+    ('COMMENT',  r'//.*'),
     ('SKIP',     r'[ \t]+'),
     ('PRINT',    r'\bprint\b'),
     ('LET',      r'\blet\b'),
@@ -70,7 +71,7 @@ def lex(characters, token_exprs):
             match = regex.match(characters, pos)
             if match:
                 text = match.group(0)
-                if tag == 'NEWLINE' or tag == 'SKIP':
+                if tag == 'NEWLINE' or tag == 'SKIP' or tag == 'COMMENT':
                     pos = match.end(0)
                     break
                 if tag == 'STRING':

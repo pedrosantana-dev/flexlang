@@ -27,6 +27,10 @@ class Parser:
                 expr = self._finish_call(callee)
                 self._consume('END', 'Expected ";"')
                 return expr
+        elif self._match('IF'):
+            return self._if_stmt()
+        elif self._match('FOR'):
+            return self._for_stmt()
         else:
             self._expression_stmt()
     
@@ -52,6 +56,34 @@ class Parser:
                 body.append(stmt)
         self._consume('RBRACE', 'Expected "}"')
         return FuncDecl(token.value, params, return_type, body)
+    
+    def _return_stmt(self):
+        value = None
+        if not self._check('END'):
+            value = self._expression()
+        self._consume('END', 'Expected ";"')
+        return ReturnStmt(value)
+    
+    def _if_stmt(self):
+        self._consume('LPAREN', 'Expected "("')
+        condition = self._expression()
+        self._consume('RPAREN', 'Expected ")"')
+        then_branch = self._statement()
+        else_branch = None
+        if self._match('ELSE'):
+            else_branch = self._statement()
+        return If(condition, then_branch, else_branch)
+    
+    def _for_stmt(self):
+        self._consume('LPAREN', 'Expected "("')
+        var = self._var_decl()
+        self._consume('IN', 'Expected "in"')
+        start = self._expression()
+        self._consume('TO', 'Expected "to"')
+        end = self._expression()
+        self._consume('RPAREN', 'Expected ")"')
+        body = self._statement()
+        return For(var, start, end, body)
     
     def _parameters(self):
         params = []
@@ -184,13 +216,6 @@ class Parser:
         expr = self._expression()
         self._consume('END', 'Expected ";"')
         return ExprStmt(expr)
-    
-    def _return_stmt(self):
-        value = None
-        if not self._check('END'):
-            value = self._expression()
-        self._consume('END', 'Expected ";"')
-        return ReturnStmt(value)
     
     def _match(self, *types):
         for type in types:
