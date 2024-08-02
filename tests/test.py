@@ -84,7 +84,6 @@ def test_calculator():
     # print(f'Qtd. Tokens: {len(tokens)}')
     parser = Parser(tokens)
     ast = parser.parse()
-    print(f'AST: {ast}')
     interpreter = Interpreter()
     interpreter.interpret(ast)
 

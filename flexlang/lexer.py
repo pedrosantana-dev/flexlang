@@ -37,7 +37,7 @@ tokens = [
     ('SKIP',     r'[ \t]+'),
     ('PRINT',    r'\bprint\b'),
     ('LET',      r'\blet\b'),
-    ('FUNC',     r'\bfunc\b'),
+    ('FUNC',     r'func(?=\s[a-zA-Z_][a-zA-Z0-9_]*\(.*\))'),
     ('RETURN',   r'\breturn\b'),
     ('IF',       r'\bif\b'),
     ('ELSE',     r'\belse\b'),
@@ -50,7 +50,7 @@ tokens = [
     ('END',      r';'),
     ('INPUT',    r'\binput\b'),
     ('STRING', r'"((?:\\.|[^"\\])*)"|\'((?:\\.|[\x20-\x7E])*)\''),
-    ('ID',       r'[a-z_]\w*'),
+    ('ID',       r'[a-z_][a-zA-Z0-9_]*'),
     # ('MISMATCH', r'.')
 ]
 

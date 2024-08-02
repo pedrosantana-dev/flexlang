@@ -20,6 +20,13 @@ class Parser:
             return self._func_decl()
         elif self._match('RETURN'):
             return self._return_stmt()
+        elif self._match('ID'):
+            token = self._previous()
+            if self._match('LPAREN'):
+                callee = Identifier(token.value)
+                expr = self._finish_call(callee)
+                self._consume('END', 'Expected ";"')
+                return expr
         else:
             self._expression_stmt()
     

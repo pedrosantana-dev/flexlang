@@ -6,15 +6,15 @@ class Interpreter:
         self.environment = {}
 
     def interpret(self, program):
-        print(f'Interpreting {type(program)}')
-        print(f'Interpreting program statements: {program.statements}')
         if isinstance(program, Program):
+            print(f'Program statements: {program.statements}')
             for statement in program.statements:
                 self._evaluate(statement)
         else:
             raise Exception(f'Unknown program type {type(program)}')                
 
     def _evaluate(self, node):
+        print(f'Evaluate: {node}')
         if isinstance(node, Num):
             return node.value
         elif isinstance(node, String):
@@ -23,6 +23,7 @@ class Interpreter:
             self.environment[node.name] = self._evaluate(node.value)
             return None
         elif isinstance(node, Identifier):
+            print(f'Identifier: {node.name}')
             return self.environment.get(node.name)
         elif isinstance(node, BinOp):
             left = self._evaluate(node.left)
@@ -43,9 +44,10 @@ class Interpreter:
             prompt = self._evaluate(node.prompt)
             return float(input(prompt))
         elif isinstance(node, Print):
-            print(f'Print: {node}')
+            print('Executar print')
             values = [self._evaluate(v) for v in node.values]
             print(" ".join(map(str, values)))
+            return None
         elif isinstance(node, ExprStmt):
             return self._evaluate(node.expr)
         elif isinstance(node, ReturnStmt):
@@ -54,8 +56,8 @@ class Interpreter:
             self.environment[node.name] = node
             return None
         elif isinstance(node, FuncCall):
+            print(f'FuncCall: {node.callee.name}')
             func = self.environment[node.callee.name]
-            print(f'Func: {func.name}')
             if func is None:
                 raise Exception(f'Undefined function {node.callee.name}')
             args = [self._evaluate(arg) for arg in node.args]

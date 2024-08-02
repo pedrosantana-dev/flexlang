@@ -24,7 +24,7 @@ class FuncDecl(ASTNode):
 
 class FuncCall(ASTNode):
     def __init__(self, callee, args):
-        self.callee: FuncDecl = callee
+        self.callee: Identifier = callee
         self.args = args
 
 
